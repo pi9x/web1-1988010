@@ -65,7 +65,7 @@
         </nav>
     </header>
     <!-- /header -->
-
+<div id="content">
     <!--small banner-->
     <div class="container-fluid" id="small-banner" style="visibility:hidden">
 
@@ -90,31 +90,8 @@
 
     <!-- main -->
     <div class="container">
-        <div class="row my-5">
-            <div class="col text-center">
-                <img src="images/icon-1.png" alt="coffee">
-                <h4>Coffee</h4>
-                <div class="pb-2">Pariatur saepe, libero nulla culpa reiciendis labore unde.</div>
-                <a class="readmore" href="#">Read more</a>
-            </div>
-            <div class="col text-center">
-                <img src="images/icon-2.png" alt="coffee">
-                <h4>Drinks</h4>
-                <div class="pb-2">Lorem ipsum dolor sit, amet consectetur adipisicing elit.</div>
-                <a class="readmore" href="#">Read more</a>
-            </div>
-            <div class="col text-center">
-                <img src="images/icon-3.png" alt="coffee">
-                <h4>Cakes</h4>
-                <div class="pb-2">Voluptas asperiores modi, quae animi consequatur quasi unde?</div>
-                <a class="readmore" href="#">Read more</a>
-            </div>
-            <div class="col text-center">
-                <img src="images/icon-4.png" alt="coffee">
-                <h4>Ice-creams</h4>
-                <div class="pb-2">Cumque necessitatibus eos, pariatur quasi suscipit fugit porro?</div>
-                <a class="readmore" href="#">Read more</a>
-            </div>
+        <div class="row my-5" id="products">
+
         </div>
     </div>
     <!-- /main -->
@@ -153,47 +130,11 @@
     <!-- news -->
     <div class="container py-5">
         <h3>News</h3>
-        <div class="row">
-            <div class="col">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="date">Dec.<br>25.</div>
-                        <a href="#" class="readmore">Read more</a>
-                    </div>
-                    <div class="col-sm-8">
-                        <h4>Accumsan et</h4>
-                        <div>Lorem ipsum dolor sit amet, con sectetuer adipiscing esse molestie</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="date">Dec.<br>25.</div>
-                        <a href="#" class="readmore">Read more</a>
-                    </div>
-                    <div class="col-sm-8">
-                        <h4>Typi non habent</h4>
-                        <div>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="date">Dec.<br>25.</div>
-                        <a href="#" class="readmore">Read more</a>
-                    </div>
-                    <div class="col-sm-8">
-                        <h4>Claritas est etiam</h4>
-                        <div>Eodem modo typi, quimolestie consequat, vel illum dolore eu</div>
-                    </div>
-                </div>
-            </div>
+        <div class="row" id="news">
         </div>
     </div>
     <!-- /news -->
-
+</div>
     <!-- footer -->
     <footer class="container-fluid">
         <ul>
@@ -211,15 +152,61 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/handlebars-v4.7.3.js"></script>
+    <script src="js/1988010.js"></script>
+
+    <script id="products-template" type="text/x-handlebars-template">
+        {{#each data}}
+        <div class="col text-center">
+            <img src="{{thumbpath}}" alt="">
+            <h4>{{name}}</h4>
+            <div class="pb-2">{{summary}}</div>
+            <a class="readmore" href="#" onclick="loadData('products/{{id}}', '#content', '#details-template');">Read more</a>
+        </div>
+        {{/each}}
+    </script>
+
+    <script id="news-template" type="text/x-handlebars-template">
+        {{#each data}}
+        <div class="col">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="date">{{date}}</div>
+                    <a href="#" class="readmore" onclick="loadData('news/{{id}}', '#content', '#details-template');">Read more</a>
+                </div>
+                <div class="col-sm-8">
+                    <h4>{{name}}</h4>
+                    <div>{{summary}}</div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+
+    <script id="details-template" type="text/x-handlebars-template">
+        <!-- small banner -->
+        <div class="container-fluid" id="small-banner">
+        </div>
+        <!-- /small banner -->
+
+        <!-- details -->
+        {{#each data}}
+        <div class="container py-5">
+            <h3 class="text-dark">{{name}}</h3>
+            <div>{{{description}}}</div>
+        </div>
+        {{/each}}
+        <!-- /details -->
+    </script>
+
+    <script>
+        loadData('products', '#products', '#products-template');
+        loadData('news', '#news', '#news-template');
+    </script>
+
 </body>
 
 </html>
