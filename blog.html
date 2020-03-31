@@ -75,55 +75,8 @@
         <div class="row">
             <div class="col-md-9">
                 <h3 class="text-dark">Blog</h3>
-                <div>
-                    <div class="blog py-3">
-                        <h4>Lorem ipsum dolor sit amet consectetur</h4>
-                        <div>by Super User in <a href="#">Blog. Lorem ipsum dolor sit amet</a> on Thu, Dec 6, 2012,
-                            GMT+7 Hits: 210 <a href="#">Comment (3)</a></div>
-                        <div class="py-3">
-                            <img src="images/blog/blog-thumb1.jpg" alt="" class="round-img pull-left img-thumbnail">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus iure ducimus
-                                corrupti expedita amet
-                                labore sapiente ad quaerat, odio dolorem! Adipisci incidunt iste nostrum explicabo.
-                                Distinctio placeat
-                                architecto eligendi, aliquam incidunt quis eum a. Vitae blanditiis repudiandae pariatur
-                                corporis officia
-                                amet totam cupiditate. Sed iure nostrum, magni aliquid velit adipisci!</p>
-                            <p><a href="#" class="readmore">Read more</a></p>
-                        </div>
-                    </div>
-                    <div class="blog py-3">
-                        <h4>Lorem ipsum dolor sit amet consectetur</h4>
-                        <div>by Super User in <a href="#">Blog. Lorem ipsum dolor sit amet</a> on Thu, Dec 6, 2012,
-                            GMT+7 Hits: 210 <a href="#">Comment (3)</a></div>
-                        <div class="py-3">
-                            <img src="images/blog/blog-thumb2.jpg" alt="" class="round-img pull-left img-thumbnail">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus iure ducimus
-                                corrupti expedita amet
-                                labore sapiente ad quaerat, odio dolorem! Adipisci incidunt iste nostrum explicabo.
-                                Distinctio placeat
-                                architecto eligendi, aliquam incidunt quis eum a. Vitae blanditiis repudiandae pariatur
-                                corporis officia
-                                amet totam cupiditate. Sed iure nostrum, magni aliquid velit adipisci!</p>
-                            <p><a href="#" class="readmore">Read more</a></p>
-                        </div>
-                    </div>
-                    <div class="blog py-3">
-                        <h4>Lorem ipsum dolor sit amet consectetur</h4>
-                        <div>by Super User in <a href="#">Blog. Lorem ipsum dolor sit amet</a> on Thu, Dec 6, 2012,
-                            GMT+7 Hits: 210 <a href="#">Comment (3)</a></div>
-                        <div class="py-3">
-                            <img src="images/blog/blog-thumb3.jpg" alt="" class="round-img pull-left img-thumbnail">
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus iure ducimus
-                                corrupti expedita amet
-                                labore sapiente ad quaerat, odio dolorem! Adipisci incidunt iste nostrum explicabo.
-                                Distinctio placeat
-                                architecto eligendi, aliquam incidunt quis eum a. Vitae blanditiis repudiandae pariatur
-                                corporis officia
-                                amet totam cupiditate. Sed iure nostrum, magni aliquid velit adipisci!</p>
-                            <p><a href="#" class="readmore">Read more</a></p>
-                        </div>
-                    </div>
+                <div id="blogs">
+                    
                 </div>
                 <div class="clearfix py-3">
                     <nav>
@@ -144,26 +97,14 @@
             <div class="col-md-3 py-3">
                 <div>
                     <h3 class="text-dark pb-3">Categories</h3>
-                    <ul class="list" id="blog-categories">
-                        <li><a href="#">In neque arcu vulputate</a></li>
-                        <li><a href="#">Vivamus luctus lectus sit</a></li>
-                        <li><a href="#">Curabitur eu dignissim velit</a></li>
-                        <li><a href="#">Lorem ipsum dolor sit amet.</a></li>
-                        <li><a href="#">Donec eu elit in nisi</a></li>
-                        <li><a href="#">Vivamus congue turpis in augue</a></li>
+                    <ul class="list" id="blogs-categories">
+
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-dark pb-3">Archives</h3>
-                    <ul class="list" id="blog-categories">
-                        <li><a href="#">December, 2012</a></li>
-                        <li><a href="#">October, 2013</a></li>
-                        <li><a href="#">November, 2015</a></li>
-                        <li><a href="#">August, 2016</a></li>
-                        <li><a href="#">October, 2016</a></li>
-                        <li><a href="#">December, 2016</a></li>
-                        <li><a href="#">March, 2018</a></li>
-                        <li><a href="#">February, 2020</a></li>
+                    <ul class="list" id="blogs-archives">
+
                     </ul>
                 </div>
             </div>
@@ -193,6 +134,79 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/handlebars-v4.7.3.js"></script>
     <script src="js/1988010.js"></script>
+
+    <script id="blogs-categories-template" type="text/x-handlebars-template">
+        {{#each data}}
+        <li><a href="#" onclick="loadBlogs('blogs/categories/{{id}}')">{{name}}</a></li>
+        {{/each}}
+    </script>
+
+    <script id="blogs-archives-template" type="text/x-handlebars-template">
+        {{#each data}}
+        <li><a href="#" onclick="loadBlogs('blogs/archives/{{month}}-{{year}}')">{{monthString}}, {{year}}</a></li>
+        {{/each}}
+    </script>
+
+    <script id="blogs-template" type="text/x-handlebars-template">
+        {{#each data.data}}
+        <div class="blog py-3">
+            <h4>{{name}}</h4>
+            <div>by {{author}} in <a href="#" onclick="loadBlogs('blogs/categories/{{categoryId}}')">Blog. {{category.name}}</a> on {{date}} Hits: 210 <a href="#" onclick="loadBlogsById({{id}})">Comment ({{comments.length}})</a></div>
+            <div class="py-3">
+                <img src="{{thumbpath}}" alt="" class="round-img pull-left img-thumbnail">
+                <p>{{summary}}</p>
+                <p><a href="#" class="readmore" onclick="loadBlogsById({{id}})">Read more</a></p>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+
+    <script id="blogs-detail-template" type="text/x-handlebars-template">
+        {{#each data}}
+        <div class="blog py-3">
+            <h4>{{name}}</h4>
+            <div>by {{author}} in <a href="#">Blog. {{category.name}}</a> on {{date}} Hits: 210 <a
+                    href="#">Comments ({{comments.length}})</a></div>
+            <div class="py-3">
+                <img src="{{imagepath}}" alt="" class="round-img pull-left img-responsive">
+                {{{description}}}
+            </div>
+        </div>
+        <div class="py-3">
+            <h4 class="text-dark">Leave your comments</h4>
+            <h4 class="text-dark">Post comment as a guest</h4>
+            <div class="bg-dark text-uppercase p-1">Comments ({{comments.length}})</div>
+            {{#each comments}}
+            <div class="row comment">
+                <div class="head"><small><strong>{{name}}</strong> {{date}}</small></div>
+                <p>{{summary}}</p>
+            </div>
+            <hr>
+            {{/each}}
+        </div>
+        {{/each}}
+    </script>
+
+    <script>
+        $(document).ready(function() {
+            loadData('blogs-categories', '#blogs-categories', '#blogs-categories-template');
+            loadData('blogs-archives', '#blogs-archives', '#blogs-archives-template');
+            loadBlogs('blogs');
+        })
+
+        function loadBlogs(request) {
+            loadData(request, '#blogs', '#blogs-template');
+        }
+
+        function loadDetails(id) {
+            loadData('blogs')
+        }
+
+        function loadBlogsById(id) {
+            loadData('blogs/' + id, '#blogs', '#blogs-detail-template');
+        }
+    </script>
+
 </body>
 
 </html>

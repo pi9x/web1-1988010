@@ -313,3 +313,25 @@ footer li.active a {
 .list a:hover {
     color: #73c926;
 }
+
+.img-responsive {
+    width: 50%;
+}
+
+hr {
+    border-top: 1px solid #000 !important;
+}
+
+.comment {
+    margin-right: 20px;
+    margin-left: 20px;
+    margin-bottom: 30px;
+}
+
+.head {
+    margin-bottom: 10px;
+}
+
+.user {
+    margin-right: 10px;
+}

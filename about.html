@@ -189,10 +189,12 @@
     </script>
 
     <script>
-        loadData('aboutus', '#aboutus', '#aboutus-template');
-        loadData('visions', '#visions', '#visions-template');
-        loadData('testimonials', '#testimonials', '#testimonials-template');
-        loadData('team', '#team', '#team-template');
+        $(document).ready(function() {
+            loadData('aboutus', '#aboutus', '#aboutus-template');
+            loadData('visions', '#visions', '#visions-template');
+            loadData('testimonials', '#testimonials', '#testimonials-template');
+            loadData('team', '#team', '#team-template');
+        });
     </script>
 </body>
 

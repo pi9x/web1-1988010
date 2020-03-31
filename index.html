@@ -203,8 +203,10 @@
     </script>
 
     <script>
-        loadData('products', '#products', '#products-template');
-        loadData('news', '#news', '#news-template');
+        $(document).ready(function() {
+            loadData('products', '#products', '#products-template');
+            loadData('news', '#news', '#news-template');
+        })
     </script>
 
 </body>
