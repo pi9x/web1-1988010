@@ -75,24 +75,8 @@
         <div class="row">
             <div class="col-md-9">
                 <h3 class="text-dark">Blog</h3>
-                <div id="blogs">
-                    
-                </div>
-                <div class="clearfix py-3">
-                    <nav>
-                        <ul class="pagination">
-                            <li class="page-item disabled">
-                                <a href="#" class="page-link"><span>1</span></a>
-                            </li>
-                            <li class="page-item">
-                                <a href="#" class="page-link"><span>2</span></a>
-                            </li>
-                            <li class="page-item">
-                                <a href="#" class="page-link"><span>3</span></a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+                <div id="blogs"></div>
+                <div id="blogs-pagination"></div>
             </div>
             <div class="col-md-3 py-3">
                 <div>
@@ -133,6 +117,7 @@
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/handlebars-v4.7.3.js"></script>
+    <script src="js/handlebars-pagination-helper.js"></script>
     <script src="js/1988010.js"></script>
 
     <script id="blogs-categories-template" type="text/x-handlebars-template">
@@ -151,11 +136,11 @@
         {{#each data.data}}
         <div class="blog py-3">
             <h4>{{name}}</h4>
-            <div>by {{author}} in <a href="#" onclick="loadBlogs('blogs/categories/{{categoryId}}')">Blog. {{category.name}}</a> on {{date}} Hits: 210 <a href="#" onclick="loadBlogsById({{id}})">Comment ({{comments.length}})</a></div>
+            <div>by {{author}} in <a href="#" onclick="loadBlogs('blogs/categories/{{categoryId}}')">Blog. {{category.name}}</a> on {{date}} Hits: 210 <a href="#" onclick="loadBlogById({{id}})">Comment ({{comments.length}})</a></div>
             <div class="py-3">
                 <img src="{{thumbpath}}" alt="" class="round-img pull-left img-thumbnail">
                 <p>{{summary}}</p>
-                <p><a href="#" class="readmore" onclick="loadBlogsById({{id}})">Read more</a></p>
+                <p><a href="#" class="readmore" onclick="loadBlogById({{id}})">Read more</a></p>
             </div>
         </div>
         {{/each}}
@@ -175,6 +160,39 @@
         <div class="py-3">
             <h4 class="text-dark">Leave your comments</h4>
             <h4 class="text-dark">Post comment as a guest</h4>
+
+            <form id='frm-comment' method="POST" onsubmit="return addComment()" data-blog-id={{id}}>
+                <div class="row">
+                    <div class="form-group col">
+                        <label for="">Name (required)</label>
+                        <input type="text" name="name" id="name" class="form-control form-control-sm" placeholder="" required>
+                    </div>
+                    <div class="form-group col">
+                        <label for="">Email</label>
+                        <input type="email" name="email" id="email" class="form-control form-control-sm" placeholder="" required>
+                    </div>
+                    <div class="form-group col">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col">
+                      <textarea class="form-control form-control-sm" name="comment" id="comment" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="row m-0">
+                    <div class="form-check form-check-inline col">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="agree" id="agree" value="false" required> Agree to terms and conditions.
+                        </label>
+                    </div>
+                    <div class="col text-right">
+                        <button type="submit" class="btn btn-link btn-sm">Submit comment</button>
+                    </div>
+                    
+                </div>
+
+            </form>
+
             <div class="bg-dark text-uppercase p-1">Comments ({{comments.length}})</div>
             {{#each comments}}
             <div class="row comment">
@@ -187,23 +205,124 @@
         {{/each}}
     </script>
 
+    <script id="blogs-pagination-template" type="text/x-handlebars-template">
+        {{#pagination currentPage pageCount size api}}
+        <nav aria-label="Page navigation" style="clear:both" class="py-3">
+            <ul class="pagination">
+                {{#unless startFromFirstPage}}
+                <li class="page-item">
+                    <a href="#" class="page-link" aria-label="Previous" onclick="loadBlog('{{api}}', 1)">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                {{/unless}}
+        
+                {{#each pages}}
+                {{#if isCurrent}}
+                <li class="page-item active">
+                    <a href="#" class="page-link" onclick="loadBlog('{{api}}', '{{page}}')">{{page}}</a>
+                </li>
+                {{else}}
+                <li class="page-item">
+                    <a href="#" class="page-link" onclick="loadBlog('{{api}}', '{{page}}')">{{page}}</a>
+                </li>
+                {{/if}}
+                {{/each}}
+        
+                {{#unless endAtLastPage}}
+                <li class="page-item">
+                    <a href="#" class="page-link" aria-label="Next" onclick="loadBlog('{{api}}', '{{pageCount}}')">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+                {{/unless}}
+            </ul>
+        </nav>
+        {{/pagination}}
+    </script>
+
     <script>
         $(document).ready(function() {
             loadData('blogs-categories', '#blogs-categories', '#blogs-categories-template');
             loadData('blogs-archives', '#blogs-archives', '#blogs-archives-template');
-            loadBlogs('blogs');
+            loadBlog('blogs');
         })
 
-        function loadBlogs(request) {
-            loadData(request, '#blogs', '#blogs-template');
+
+        function loadBlog(request, page = 1) {
+            $.ajax({
+                url: `https://web1-api.herokuapp.com/api/${request}?page=${page}`,
+                cache: false,
+                success: (data) => {
+                    let jsonData = {
+                        data: data
+                    };
+                    let target = $("#blogs");
+                    let source = $("#blogs-template").html();
+                    let template = Handlebars.compile(source);
+                    $(target).html(template(jsonData));
+
+                    jsonData = {
+                        currentPage: page,
+                        size: 2,
+                        pageCount: data.pageCount,
+                        api: request
+                    };
+                    target = $("#blogs-pagination");
+                    source = $("#blogs-pagination-template").html();
+                    template = Handlebars.compile(source);
+                    $(target).html(template(jsonData));
+                }
+            });
         }
 
         function loadDetails(id) {
             loadData('blogs')
         }
 
-        function loadBlogsById(id) {
+
+        function loadBlogById(id) {
             loadData('blogs/' + id, '#blogs', '#blogs-detail-template');
+        }
+
+        function addComment() {
+            let formData = {
+                name: $('#name').val(),
+                email: $('#email').val(),
+                comment: $('#comment').val(),
+                blogId: $('#frm-comment').data('blogId'),
+                agree: $('#agree').prop('checked')
+            }
+
+            $.ajax({
+                url: "http://web1-api.herokuapp.com/users/authenticate",
+                dataType: "json",
+                type: "POST",
+                data: {
+                    username: 'test',
+                    password: '1c3cr3@m'
+                },
+                success: function (r) {
+                    $.ajax({
+                        url: "http://web1-api.herokuapp.com/users/comment",
+                        dataType: "json",
+                        type: "POST",
+                        headers: {
+                            "Authorization": 'Bearer ' + r.token
+                        },
+                        data: formData,
+                        success: function (r) {
+                            loadBlogById(formData.blogId)
+                        },
+                        error: function(xhr, status, error) {
+                            window.alert(error);
+                        }
+                    });
+                }
+            });
+            return false;
         }
     </script>
 
